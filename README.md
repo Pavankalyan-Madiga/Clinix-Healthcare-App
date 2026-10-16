@@ -586,6 +586,4 @@ The project deliverables include:
 
 Developed by **Pavankalyan Madiga**
 
-**Role:** Mobile Engineer Intern (Flutter)
-
 [GitHub](https://github.com/Pavankalyan-Madiga) | [LinkedIn](https://www.linkedin.com/in/pavankalyan-madiga/)
