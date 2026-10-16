@@ -1,13 +1,16 @@
-# Clinix
+# Clinix - Healthcare Application
 
 Clinix is an offline-first clinical mobile platform designed for simulated healthcare staff. It enables staff to manage patients, clinical tasks, notes, voice notes, vitals, messaging, QR/barcode scanning, and wound documentation while continuing to work without network connectivity.
 
+---
 
 ## Project Overview
 
 Clinix follows an offline-first architecture where the local database is the primary working environment. User actions are stored locally and synchronized with the backend when connectivity is restored.
 
 The project was developed according to the requirements of the **Offline-First Clinical Mobile Platform** specification.
+
+---
 
 ## Core Features
 
@@ -109,48 +112,52 @@ Features include:
 - Offline recording
 - Permission and recording error handling
 
+---
+
 ## Architecture
 
-```
+```text
                          CLINIX MOBILE APP
                                 |
                                 v
-                    +----------------------+
-                    |      Flutter UI      |
-                    |      Riverpod        |
-                    +----------+-----------+
-                               |
-                               v
-                    +----------------------+
-                    |    Local Database    |
-                    |     Drift / SQLite   |
-                    +----------+-----------+
-                               |
-                               v
-                    +----------------------+
-                    |      Sync Engine     |
-                    | Queue / Retry        |
-                    | Idempotency          |
-                    | Version Tracking     |
-                    | Conflict Resolution  |
-                    +----------+-----------+
-                               |
-                    REST API  |  WebSocket
-                               |
-                               v
-                    +----------------------+
-                    |    FastAPI Backend   |
-                    +----------+-----------+
-                               |
-                               v
-                    +----------------------+
-                    |      PostgreSQL      |
-                    +----------------------+
+                     +----------------------+
+                     |      Flutter UI      |
+                     |      Riverpod        |
+                     +----------+-----------+
+                                |
+                                v
+                     +----------------------+
+                     |    Local Database    |
+                     |     Drift / SQLite   |
+                     +----------+-----------+
+                                |
+                                v
+                     +----------------------+
+                     |      Sync Engine     |
+                     | Queue / Retry        |
+                     | Idempotency          |
+                     | Version Tracking     |
+                     | Conflict Resolution  |
+                     +----------+-----------+
+                                |
+                         REST API | WebSocket
+                                |
+                                v
+                     +----------------------+
+                     |    FastAPI Backend   |
+                     +----------+-----------+
+                                |
+                                v
+                     +----------------------+
+                     |      PostgreSQL      |
+                     +----------------------+
 ```
+
+---
 
 ## Offline-First Data Flow
 
-```
+```text
 User Action
      |
      v
@@ -164,27 +171,29 @@ Sync Operation Queue
      v
 Network Available?
      |
-  +--+------+
-  |         |
- NO        YES
-  |         |
-  v         v
-Wait    Send Operation
-            |
-            v
+   +---+------+
+   |          |
+  NO         YES
+   |          |
+   v          v
+ Wait    Send Operation
+              |
+              v
        Backend Validation
-            |
-       +----+-----+
-       |          |
-    Success    Conflict
-       |          |
-       v          v
-   Complete    Resolve
+              |
+          +---+-----+
+          |         |
+       Success   Conflict
+          |         |
+          v         v
+      Complete   Resolve
 ```
+
+---
 
 ## Conflict Resolution Flow
 
-```
+```text
 Client A Change
        |
        v
@@ -199,19 +208,21 @@ Version Conflict
        v
 Conflict Detection
        |
-   +---+----------+
-   |              |
+    +---+----------+
+    |              |
 Keep Local    Keep Server
-   |              |
-   +------+-------+
-          |
-          v
-   Final Consistent State
+    |              |
+    +------+-------+
+           |
+           v
+    Final Consistent State
 ```
+
+---
 
 ## WebSocket Recovery
 
-```
+```text
 WebSocket Connected
         |
         v
@@ -220,27 +231,29 @@ Receive Real-Time Event
         v
 Check Entity Version
         |
-   +----+-----+
-   |          |
-Current     Stale /
-Event       Duplicate
-   |          |
-   v          v
-Apply       Ignore
-Update
-   |
-   v
+    +----+-----+
+    |          |
+ Current     Stale /
+ Event       Duplicate
+    |          |
+    v          v
+ Apply       Ignore
+ Update
+    |
+    v
 Connection Lost
-   |
-   v
+    |
+    v
 Automatic Reconnect
-   |
-   v
+    |
+    v
 Recover Missed Changes
-   |
-   v
+    |
+    v
 Resume Real-Time Updates
 ```
+
+---
 
 ## Technology Stack
 
@@ -271,9 +284,11 @@ Resume Real-Time Updates
 - REST API
 - WebSocket
 
+---
+
 ## Project Structure
 
-```
+```text
 Clinix/
 |
 +-- clinix/
@@ -299,16 +314,18 @@ Clinix/
 |   |   |   +-- qr_scanner/
 |   |   |   +-- wound_documentation/
 |   |   +-- shared/
-|   |   +-- android/
-|   |   +-- ios/
-|   |   +-- web/
-|   |   +-- pubspec.yaml
-|   |
+|   +-- android/
+|   +-- ios/
+|   +-- web/
+|   +-- pubspec.yaml
+|
 +-- backend/
 +-- docker-compose.yml
 +-- README.md
 +-- .gitignore
 ```
+
+---
 
 ## Database
 
@@ -329,6 +346,8 @@ The local database stores:
 
 The local database allows the application to continue working without network connectivity.
 
+---
+
 ## Running the Backend
 
 ```bash
@@ -342,6 +361,8 @@ The API will be available at:
 - `http://localhost:8000`
 - FastAPI documentation: `http://localhost:8000/docs`
 
+---
+
 ## Running the Flutter Application
 
 ```bash
@@ -350,11 +371,7 @@ flutter pub get
 flutter run
 ```
 
-For Chrome/Web:
-
-```bash
-flutter run -d chrome
-```
+---
 
 ## Building the Android APK
 
@@ -367,20 +384,13 @@ flutter build apk --release
 
 The generated APK will be located at:
 
-```
+```text
 clinix/build/app/outputs/flutter-apk/app-release.apk
 ```
 
 The Android APK is the primary mobile application build for evaluation and demonstration.
 
-## Building Flutter Web
-
-```bash
-cd clinix
-flutter build web --release
-```
-
-
+---
 
 ## Authentication
 
@@ -394,6 +404,8 @@ Clinix uses simulated authentication for the project demonstration.
 | Password | `Clinix@123` |
 
 No real healthcare authentication system is used.
+
+---
 
 ## Testing
 
@@ -451,6 +463,8 @@ The project includes testing and validation for:
 - WebSocket recovery
 - Local data persistence
 
+---
+
 ## Production Build
 
 The project provides a production-oriented Android build for evaluation.
@@ -467,9 +481,19 @@ The project includes:
 - Project documentation
 - Known limitations
 
-## Demo
+---
 
-The project demonstration covers:
+## 📱 Android APK Demo
+
+The Clinix Android application is available as a release APK for evaluation and demonstration.
+
+### Download APK
+
+**[Download Clinix APK](https://drive.google.com/file/d/1BOeYnsn03GRt2kxMzb4Zk2uCWmVVAryr/view?usp=drive_link)**
+
+### Demo Features
+
+The APK demonstrates:
 
 - User authentication
 - Patient management
@@ -488,6 +512,10 @@ The project demonstration covers:
 - Staff messaging
 - Wound/photo documentation
 
+> **Note:** Clinix is a simulated clinical platform developed for technical evaluation and demonstration. No real patient data is used.
+
+---
+
 ## Security Considerations
 
 The application follows basic security practices appropriate for a simulated project.
@@ -498,6 +526,8 @@ The application follows basic security practices appropriate for a simulated pro
 - Backend endpoints validate synchronization operations
 - Client operations use unique operation identifiers
 - Server versions are used for conflict detection
+
+---
 
 ## Scope and Limitations
 
@@ -515,6 +545,8 @@ The project does not include:
 - Large-scale hospital infrastructure
 - Multi-region deployment
 
+---
+
 ## AI Development Disclosure
 
 AI coding and development assistants were used during development for:
@@ -529,6 +561,8 @@ AI coding and development assistants were used during development for:
 - Development workflow guidance
 
 AI assistance was used as a development aid. The application was integrated, tested, and validated as part of the project development process.
+
+---
 
 ## Project Deliverables
 
@@ -546,12 +580,12 @@ The project deliverables include:
 - AI tools documentation
 - Source code repository
 
-  ## 👨‍💻 Author
+---
+
+## 👨‍💻 Author
 
 Developed by **Pavankalyan Madiga**
 
-Role : **Mobile Engineer Intern(Flutter)**
+**Role:** Mobile Engineer Intern (Flutter)
 
-[![GitHub](https://img.shields.io/badge/GitHub-Pavankalyan--Madiga-black?style=flat&logo=github)](https://github.com/Pavankalyan-Madiga) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=flat&logo=linkedin)](https://www.linkedin.com/in/pavankalyan-madiga/)
-
-
+[GitHub](https://github.com/Pavankalyan-Madiga) | [LinkedIn](https://www.linkedin.com/in/pavankalyan-madiga/)
